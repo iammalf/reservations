@@ -37,6 +37,8 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   const { dispatch } = useContext(AuthContext);
 
   const handleLogin = (e) => {
@@ -57,8 +59,6 @@ export default function LoginForm() {
   };
 
   //CODIGO DE PLANTILLA
-
-  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
 

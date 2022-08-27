@@ -28,21 +28,19 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 // components
 import Page from "../components/Page";
 
-// ----------------------------------------------------------------------
-
-export default function User() {
+export default function Tours() {
   //CODIGO OBTENCION DE USUARIOS
-  const [users, setUsers] = useState([]);
+  const [tours, setTours] = useState([]);
 
   //READ USERS FROM FIREBASE
   useEffect(() => {
-    const q = query(collection(db, "users"));
+    const q = query(collection(db, "tours"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let usersArr = [];
+      let toursArr = [];
       querySnapshot.forEach((doc) => {
-        usersArr.push({ ...doc.data(), id: doc.id });
+        toursArr.push({ ...doc.data(), id: doc.id });
       });
-      setUsers(usersArr);
+      setTours(toursArr);
     });
     return () => unsubscribe();
   }, []);
@@ -50,7 +48,7 @@ export default function User() {
   //DELETE USERS
 
   const deleteUsers = async (id) => {
-    await deleteDoc(doc(db, "users", id));
+    await deleteDoc(doc(db, "tours", id));
   };
 
   //CODIGO DATAGRID
@@ -58,17 +56,12 @@ export default function User() {
     {
       field: "name",
       headerName: "Name",
-      width: 200,
+      width: 300,
     },
     {
-      field: "email",
-      headerName: "Email",
-      width: 200,
-    },
-    {
-      field: "role",
-      headerName: "Role",
-      width: 100,
+      field: "description",
+      headerName: "Description",
+      width: 400,
     },
     {
       field: "actions",
@@ -76,7 +69,7 @@ export default function User() {
       type: "actions",
       sortable: false,
       width: 200,
-      renderCell: (users) => (
+      renderCell: (tours) => (
         <Box>
           <Tooltip title="View Details">
             <IconButton color="success">
@@ -84,7 +77,7 @@ export default function User() {
             </IconButton>
           </Tooltip>
           <Tooltip title="Edit This User">
-            <Link to={`/dashboard/edituser/${users.id}`}>
+            <Link to={`/dashboard/edittour/${tours.id}`}>
               <IconButton color="primary">
                 <Edit />
               </IconButton>
@@ -94,7 +87,7 @@ export default function User() {
             <IconButton
               color="error"
               onClick={() => {
-                deleteUsers(users.id);
+                deleteUsers(tours.id);
               }}
             >
               <Delete />
@@ -109,19 +102,19 @@ export default function User() {
   // const usersCollection = collection(db, "users");
   //Funcion para mostrar todos los usuarios
   /* const getUsers = async () => {
-    const data = await getDocs(usersCollection);
-    setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    console.log(users);
-  };
-  //usamos useEffect
-  useEffect(() => {
-    getUsers();
-  }, []); */
+   const data = await getDocs(usersCollection);
+   setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+   console.log(users);
+ };
+ //usamos useEffect
+ useEffect(() => {
+   getUsers();
+ }, []); */
 
   //CODIGO DE LA PLANTILLA
 
   return (
-    <Page title="User">
+    <Page title="Tours List">
       <Container>
         <Stack
           direction="row"
@@ -130,11 +123,11 @@ export default function User() {
           mb={5}
         >
           <Typography variant="h4" gutterBottom>
-            User
+            Tours
           </Typography>
-          <Link to="/dashboard/newuser">
+          <Link to="/dashboard/newtour">
             <Button variant="contained" color="primary">
-              New User
+              New Tour
             </Button>
           </Link>
         </Stack>
@@ -142,7 +135,7 @@ export default function User() {
         <Card>
           <Box sx={{ height: 400, width: "100%" }}>
             <DataGrid
-              rows={users}
+              rows={tours}
               columns={columns}
               pageSize={5}
               components={{ Toolbar: GridToolbar }}
