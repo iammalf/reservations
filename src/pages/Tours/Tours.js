@@ -9,7 +9,7 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 // material
 import {
   Card,
@@ -26,7 +26,7 @@ import { Delete, Edit, Preview } from "@mui/icons-material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 // components
-import Page from "../components/Page";
+import Page from "../../components/Page";
 
 export default function Tours() {
   //CODIGO OBTENCION DE USUARIOS
@@ -133,7 +133,7 @@ export default function Tours() {
         </Stack>
 
         <Card>
-          <Box sx={{ height: 400, width: "100%" }}>
+          <Box sx={{ height: 700, width: "100%" }}>
             <DataGrid
               rows={tours}
               columns={columns}

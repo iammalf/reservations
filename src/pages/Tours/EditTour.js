@@ -67,34 +67,39 @@ export default function EditTour() {
           mb={4}
         >
           <Typography variant="h4" gutterBottom>
-            Create New Tour
+            Edit Tour
           </Typography>
         </Stack>
 
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <form onSubmit={updateTour}>
-            <FormControl sx={{ m: 1, width: "100ch" }} variant="outlined">
-              <TextField
-                label="Name"
-                variant="outlined"
-                required
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </FormControl>
-            <FormControl sx={{ m: 1, width: "100ch" }} variant="outlined">
-              <TextField
-                label="Description"
-                variant="outlined"
-                required
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </FormControl>
+            <div>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <TextField
+                  label="Name"
+                  variant="outlined"
+                  required
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <TextField
+                  label="Description"
+                  variant="outlined"
+                  required
+                  type="text"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </FormControl>
+            </div>
 
-            <Stack direction="row" spacing={2}>
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={{ xs: 1, sm: 2, md: 4 }}
+            >
               <Link to="/dashboard/tours">
                 <Button variant="contained" color="error">
                   Cancel

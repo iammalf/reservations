@@ -8,8 +8,10 @@ import {
   onSnapshot,
   deleteDoc,
   doc,
+  Timestamp,
+  setDoc,
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 // material
 import {
   Card,
@@ -26,15 +28,15 @@ import { Delete, Edit, Preview } from "@mui/icons-material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 // components
-import Page from "../components/Page";
-
+import Page from "../../components/Page";
+import Reservationslist from "../Reservations/Components/ReservationsList";
 // ----------------------------------------------------------------------
 
 export default function User() {
-  //CODIGO OBTENCION DE USUARIOS
+  //TODO CODIGO OBTENCION DE USUARIOS
   const [users, setUsers] = useState([]);
 
-  //READ USERS FROM FIREBASE
+  //TODO READ USERS FROM FIREBASE
   useEffect(() => {
     const q = query(collection(db, "users"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -47,13 +49,13 @@ export default function User() {
     return () => unsubscribe();
   }, []);
 
-  //DELETE USERS
+  //TODO DELETE USERS
 
   const deleteUsers = async (id) => {
     await deleteDoc(doc(db, "users", id));
   };
 
-  //CODIGO DATAGRID
+  //TODO CODIGO DATAGRID
   const columns = [
     {
       field: "name",
@@ -132,6 +134,7 @@ export default function User() {
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
+
           <Link to="/dashboard/newuser">
             <Button variant="contained" color="primary">
               New User
@@ -151,6 +154,12 @@ export default function User() {
               disableSelectionOnClick
               experimentalFeatures={{ newEditingApi: true }}
             />
+          </Box>
+        </Card>
+
+        <Card>
+          <Box sx={{ height: 400, width: "100%" }}>
+            <Reservationslist />
           </Box>
         </Card>
       </Container>

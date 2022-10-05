@@ -59,7 +59,7 @@ export default function NewTour() {
 
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <form onSubmit={handleAdd}>
-            <FormControl sx={{ m: 1, width: "100ch" }} variant="outlined">
+            <FormControl fullWidth sx={{ m: 1 }}>
               <TextField
                 label="Name"
                 variant="outlined"
@@ -69,7 +69,7 @@ export default function NewTour() {
                 onChange={(e) => setName(e.target.value)}
               />
             </FormControl>
-            <FormControl sx={{ m: 1, width: "100ch" }} variant="outlined">
+            <FormControl fullWidth sx={{ m: 1 }}>
               <TextField
                 label="Description"
                 variant="outlined"

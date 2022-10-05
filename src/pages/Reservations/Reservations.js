@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import moment from "moment";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+
+import { supabase } from "../../supabse/client";
 
 //FIREBASE
 import {
@@ -10,6 +13,9 @@ import {
   onSnapshot,
   deleteDoc,
   doc,
+  getDocs,
+  where,
+  orderBy,
 } from "firebase/firestore";
 import { db } from "../../firebase";
 // material
@@ -22,21 +28,36 @@ import {
   Typography,
   IconButton,
   Tooltip,
+  TextField,
 } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Delete, Edit, Preview } from "@mui/icons-material";
 
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 // components
 import Page from "../../components/Page";
+import Reservationslist from "./Components/ReservationsList";
 
 export default function Reservations() {
-  //CODIGO OBTENCION DE USUARIOS
+  //TODO DATE FILTER
+
+  const [dateFilter, setDateFilter] = useState(moment());
+  console.log(dateFilter);
+
+  const dateEqual = moment(dateFilter).format("YYYY-MM-DD");
+  console.log(dateEqual);
+
+  // TODO CODIGO OBTENCION DE USUARIOS
   const [reservations, setReservations] = useState([]);
   console.log(reservations);
-  //READ USERS FROM FIREBASE
+  // TODO READ USERS FROM FIREBASE
   useEffect(() => {
-    const q = query(collection(db, "reservations"));
+    const q = query(
+      collection(db, "reservations"),
+      orderBy("bookingDate", "desc")
+    );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       let reservationsArr = [];
       querySnapshot.forEach((doc) => {
@@ -47,33 +68,68 @@ export default function Reservations() {
     return () => unsubscribe();
   }, []);
 
-  //DELETE USERS
+  //TODO SUPABASE DATAGRID
+  const [supabaseReservations, setSuperReservations] = useState([]);
+  console.log(supabaseReservations);
+  useEffect(() => {
+    const fetchDataSupabase = async () => {
+      const { error, data } = await supabase.from("reservations").select();
+      if (error) {
+        setSuperReservations([]);
+      }
+      if (data) {
+        setSuperReservations(data);
+      }
+    };
+    fetchDataSupabase();
+  }, []);
 
+  // TODO DELETE USERS
   const deleteUsers = async (id) => {
     await deleteDoc(doc(db, "reservations", id));
   };
 
-  //CODIGO DATAGRID
+  //TODO CONSULTA QUERY
+  const handleQuery = async (e) => {
+    e.preventDefault();
+    const q = query(
+      collection(db, "reservations"),
+      where("bookingDate", "==", new Date(dateEqual))
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      let queryArray = [];
+      querySnapshot.forEach((doc) => {
+        queryArray.push({ ...doc.data(), id: doc.id });
+      });
+      setReservations(queryArray);
+    });
+    return () => unsubscribe();
+  };
+  // TODO CODIGO DATAGRID
   const columns = [
-    //TODO PRIMER GRUPO
     {
       field: "bookingNumber",
       headerName: "Booking Number",
-      width: 100,
+      width: 150,
     },
     {
       field: "bookingDate",
       headerName: "Booking Date",
+      editable: true,
+
       width: 150,
-      valueFormatter: (reservations) =>
-        moment(reservations.startDate).format("DD/MM/YYYY"),
+      renderCell: (params) =>
+        moment(params.row.bookingDate.toDate().toUTCString()).format(
+          "DD/MM/YYYY"
+        ),
     },
     {
       field: "counter",
       headerName: "Counter",
       width: 150,
     },
-    //TODO SEGUNDO GRUPO
+
+    //TODO SEGUNDO GRUPO 927987674
     {
       field: "tour",
       headerName: "Tour",
@@ -82,16 +138,18 @@ export default function Reservations() {
     {
       field: "startDate",
       headerName: "Start Date",
-      width: 150,
-      valueFormatter: (reservations) =>
-        moment(reservations.startDate).format("DD/MM/YYYY"),
+      type: "date",
+      width: 120,
+      valueFormatter: (params) =>
+        moment(params.value.toDate()).format("YYYY-MM-DD"),
     },
     {
       field: "endDate",
       headerName: "End Date",
-      width: 150,
-      valueFormatter: (reservations) =>
-        moment(reservations.endDate).format("DD/MM/YYYY"),
+      type: "date",
+      width: 120,
+      valueFormatter: (params) =>
+        moment(params.value.toDate()).format("YYYY-MM-DD"),
     },
     {
       field: "hotelCusco",
@@ -102,12 +160,18 @@ export default function Reservations() {
     {
       field: "bfdatetime",
       headerName: "Briefing DateTime",
-      width: 150,
+      type: "date",
+      width: 180,
+      valueFormatter: (params) =>
+        moment(params.value.toDate()).format("YYYY-MM-DD HH:mm:ss"),
     },
     {
       field: "picktime",
       headerName: "Pick Up Time",
-      width: 150,
+      type: "date",
+      width: 120,
+      valueFormatter: (params) =>
+        moment(params.value.toDate()).format("HH:mm:ss"),
     },
     {
       field: "outwordjourney",
@@ -217,14 +281,14 @@ export default function Reservations() {
       headerName: "Balance Dollars",
       width: 150,
     },
-    //TODO ACTIONS
+    /* //TODO ACTIONS
     {
       field: "actions",
       headerName: "Actions",
       type: "actions",
       sortable: false,
       width: 200,
-      renderCell: (reservations) => (
+      getActions: (reservations) => [
         <Box>
           <Tooltip title="View Details">
             <IconButton color="success">
@@ -248,8 +312,32 @@ export default function Reservations() {
               <Delete />
             </IconButton>
           </Tooltip>
-        </Box>
-      ),
+        </Box>,
+      ],
+    }, */
+  ];
+
+  const columnas = [
+    {
+      field: "bookingNumber",
+      headerName: "Booking Number",
+      width: 150,
+    },
+    {
+      field: "bookingDate",
+      headerName: "Booking Number",
+      editable: true,
+      type: "date",
+      renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
+      width: 250,
+    },
+    {
+      field: "created_at",
+      headerName: "Created At",
+      editable: true,
+      type: "date",
+      renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
+      width: 250,
     },
   ];
 
@@ -287,12 +375,34 @@ export default function Reservations() {
           </Link>
         </Stack>
 
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          mb={5}
+        >
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              label="Date Filter"
+              value={dateFilter}
+              onChange={(newValue) => {
+                setDateFilter(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+          <Button variant="contained" color="primary" onClick={handleQuery}>
+            Filter Reservation
+          </Button>
+        </Stack>
+
         <Card>
-          <Box sx={{ height: 400, width: "100%" }}>
+          <Box sx={{ height: 300, width: "100%" }}>
             <DataGrid
               rows={reservations}
               columns={columns}
-              pageSize={5}
+              pageSize={10}
+              getRowId={(row) => row.id}
               components={{ Toolbar: GridToolbar }}
               rowsPerPageOptions={[5, 10, 20]}
               checkboxSelection
@@ -301,6 +411,27 @@ export default function Reservations() {
             />
           </Box>
         </Card>
+
+        <Card>
+          <Box sx={{ height: 500, width: "100%" }}>
+            <DataGrid
+              rows={supabaseReservations}
+              columns={columnas}
+              pageSize={10}
+              components={{ Toolbar: GridToolbar }}
+              rowsPerPageOptions={[5, 10, 20]}
+              checkboxSelection
+              disableSelectionOnClick
+              experimentalFeatures={{ newEditingApi: true }}
+            />
+          </Box>
+        </Card>
+
+        {/* <Card>
+          <Box sx={{ height: 700, width: "100%" }}>
+            <Reservationslist />
+          </Box>
+        </Card> */}
       </Container>
     </Page>
   );

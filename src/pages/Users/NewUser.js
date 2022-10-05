@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 //FIREBASE
-import { db, auth } from "../firebase";
+import { db, auth } from "../../firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
@@ -18,10 +18,11 @@ import {
   MenuItem,
   FormControl,
   TextField,
+  Select,
 } from "@mui/material";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+
 // components
-import Page from "../components/Page";
+import Page from "../../components/Page";
 
 // ----------------------------------------------------------------------
 
@@ -35,7 +36,7 @@ export default function NewUser() {
   //CODIGO SELECT
   const [role, setRole] = useState("");
 
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleChange = (event) => {
     setRole(event.target.value);
   };
 
@@ -59,8 +60,6 @@ export default function NewUser() {
     }
   };
 
-  //CODIGO DE LA PLANTILLA
-
   return (
     <Page title="New User">
       <Container>
@@ -77,59 +76,65 @@ export default function NewUser() {
 
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <form onSubmit={handleAdd}>
-            <FormControl sx={{ m: 1, width: "50ch" }} variant="outlined">
+            <div>
               <TextField
+                sx={{ m: 1, width: "35ch" }}
                 label="Names"
                 variant="outlined"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-            </FormControl>
-            <FormControl sx={{ m: 1, width: "50ch" }} variant="outlined">
-              <TextField
-                label="Email"
-                variant="outlined"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </FormControl>
-            <FormControl sx={{ m: 1, width: "50ch" }} variant="outlined">
-              <TextField
-                label="Password"
-                variant="outlined"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </FormControl>
-            <FormControl sx={{ m: 1, width: "50ch" }} variant="outlined">
-              <InputLabel id="role">Role</InputLabel>
-              <Select
-                labelId="role"
-                value={role}
-                label="Role"
-                onChange={handleChange}
-              >
-                <MenuItem value={"Counter"}>Counter</MenuItem>
-                <MenuItem value={"Admin"}>Admin</MenuItem>
-              </Select>
-            </FormControl>
 
-            <FormControl sx={{ m: 1, width: "50ch" }} variant="outlined">
-              <Link to="/dashboard/user">
-                <Button variant="contained" color="error">
-                  Cancel
+              <FormControl sx={{ m: 1, width: "35ch" }} variant="outlined">
+                <TextField
+                  label="Email"
+                  variant="outlined"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </FormControl>
+            </div>
+            <div>
+              <FormControl sx={{ m: 1, width: "35ch" }} variant="outlined">
+                <TextField
+                  label="Password"
+                  variant="outlined"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </FormControl>
+              <FormControl sx={{ m: 1, width: "35ch" }} variant="outlined">
+                <InputLabel id="role">Role</InputLabel>
+                <Select
+                  labelId="role"
+                  value={role}
+                  label="Role"
+                  onChange={handleChange}
+                >
+                  <MenuItem value={"Counter"}>Counter</MenuItem>
+                  <MenuItem value={"Admin"}>Admin</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+
+            <div>
+              <FormControl sx={{ m: 1, width: "35ch" }} variant="outlined">
+                <Link to="/dashboard/user">
+                  <Button variant="contained" color="error">
+                    Cancel
+                  </Button>
+                </Link>
+              </FormControl>
+
+              <FormControl sx={{ m: 1, width: "35ch" }} variant="outlined">
+                <Button type="submit" variant="contained" color="primary">
+                  Add User
                 </Button>
-              </Link>
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "50ch" }} variant="outlined">
-              <Button type="submit" variant="contained" color="primary">
-                Add User
-              </Button>
-            </FormControl>
+              </FormControl>
+            </div>
           </form>
         </Box>
       </Container>

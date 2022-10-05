@@ -3,7 +3,13 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 //FIREBASE
 import { db } from "../../firebase";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  getDoc,
+  collection,
+  getDocs,
+} from "firebase/firestore";
 
 // material
 import {
@@ -17,6 +23,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Grid,
+  InputAdornment,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -27,6 +35,18 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import Page from "../../components/Page";
 
 export default function EditReservations() {
+  //TODO RECUPERANDO LOS TOURS
+  const [tours, setTours] = useState([]);
+
+  useEffect(() => {
+    const toursCollection = collection(db, "tours");
+    const getCollection = async () => {
+      const data = await getDocs(toursCollection);
+      setTours(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    getCollection();
+  }, []);
+
   //DATOS
   const navigate = useNavigate();
   const { id } = useParams();
@@ -147,16 +167,16 @@ export default function EditReservations() {
     if (reservation.exists()) {
       //TODO PRIMER GRUPO
       setBnumber(reservation.data().bookingNumber);
-      setBdate(reservation.data().bookingDate);
+      setBdate(reservation.data().bookingDate.toDate());
       setCounter(reservation.data().counter);
       //TODO SEGUNDO GRUPO
       setTour(reservation.data().tour);
-      setStartdate(reservation.data().startDate);
-      setEnddate(reservation.data().endDate);
+      setStartdate(reservation.data().startDate.toDate());
+      setEnddate(reservation.data().endDate.toDate());
       setHotelCusco(reservation.data().hotelCusco);
       //TODO TERCER GRUPO
-      setBfdatetime(reservation.data().bfdatetime);
-      setPicktime(reservation.data().picktime);
+      setBfdatetime(reservation.data().bfdatetime.toDate());
+      setPicktime(reservation.data().picktime.toDate());
       setOutwordJourney(reservation.data().outwordjourney);
       setReturnjourney(reservation.data().returnjourney);
       setHotelinaacc(reservation.data().hotelinaacc);
@@ -208,372 +228,496 @@ export default function EditReservations() {
 
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <form onSubmit={updateReservations}>
-            {/* TODO: PRIMER GRUPO */}
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Booking Number"
-                variant="outlined"
-                required
-                type="text"
-                value={bnumber}
-                onChange={(e) => setBnumber(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Stack spacing={3}>
-                  <DatePicker
-                    label="Booking date"
-                    value={bdate}
-                    onChange={(newValue) => {
-                      setBdate(newValue);
-                    }}
-                    inputFormat="yyyy-MM-dd"
-                    renderInput={(params) => (
-                      <TextField {...params} helperText={null} />
-                    )}
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Booking Number"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={bnumber}
+                    onChange={(e) => setBnumber(e.target.value)}
                   />
-                </Stack>
-              </LocalizationProvider>
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Counter"
-                variant="outlined"
-                required
-                type="text"
-                value={counter}
-                onChange={(e) => setCounter(e.target.value)}
-              />
-            </FormControl>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Stack spacing={3}>
+                      <DatePicker
+                        label="Booking date"
+                        value={bdate}
+                        onChange={(newValue) => {
+                          setBdate(newValue);
+                        }}
+                        inputFormat="yyyy-MM-dd"
+                        renderInput={(params) => (
+                          <TextField {...params} helperText={null} />
+                        )}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Counter"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={counter}
+                    onChange={(e) => setCounter(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
 
             {/* TODO: SEGUNDO GRUPO */}
-            <FormControl sx={{ m: 1, width: "25ch" }}>
-              <InputLabel id="tour">Tour</InputLabel>
-              <Select value={tour} label="Tour" onChange={handleTour}>
-                <MenuItem value={"Tour 1"}>Tour 1</MenuItem>
-                <MenuItem value={"Tour 2"}>Tour 2</MenuItem>
-                <MenuItem value={"Tour 3"}>Tour 3</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl sx={{ m: 1, width: "22ch" }}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Stack spacing={3}>
-                  <DatePicker
-                    label="Start date"
-                    value={startdate}
-                    inputFormat="yyyy-MM-dd"
-                    onChange={(newValue1) => {
-                      setStartdate(newValue1);
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} helperText={null} />
-                    )}
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid item xs={12} sm={3} md={3}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <InputLabel id="tour">Tour</InputLabel>
+                  <Select value={tour} label="Tour" onChange={handleTour}>
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {tours.map((single) => {
+                      return (
+                        <MenuItem key={single.id} value={single.name}>
+                          {single.name}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={3} md={3}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Stack spacing={3}>
+                      <DatePicker
+                        label="Start date"
+                        value={startdate}
+                        inputFormat="yyyy-MM-dd"
+                        onChange={(newValue1) => {
+                          setStartdate(newValue1);
+                        }}
+                        renderInput={(params) => (
+                          <TextField {...params} helperText={null} />
+                        )}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={3} md={3}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Stack spacing={3}>
+                      <DatePicker
+                        label="End date"
+                        value={enddate}
+                        inputFormat="yyyy-MM-dd"
+                        onChange={(newValue2) => {
+                          setEnddate(newValue2);
+                        }}
+                        renderInput={(params) => (
+                          <TextField {...params} helperText={null} />
+                        )}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={3} md={3}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Hotel Cusco"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={hotelcusco}
+                    onChange={(e) => setHotelCusco(e.target.value)}
                   />
-                </Stack>
-              </LocalizationProvider>
-            </FormControl>
-            <FormControl sx={{ m: 1, width: "22ch" }}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Stack spacing={3}>
-                  <DatePicker
-                    label="End date"
-                    value={enddate}
-                    inputFormat="yyyy-MM-dd"
-                    onChange={(newValue2) => {
-                      setEnddate(newValue2);
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} helperText={null} />
-                    )}
-                  />
-                </Stack>
-              </LocalizationProvider>
-            </FormControl>
-            <FormControl sx={{ m: 1, width: "28ch" }}>
-              <TextField
-                label="Hotel Cusco"
-                variant="outlined"
-                required
-                type="text"
-                value={hotelcusco}
-                onChange={(e) => setHotelCusco(e.target.value)}
-              />
-            </FormControl>
+                </FormControl>
+              </Grid>
+            </Grid>
 
             {/* TODO: TERCER GRUPO */}
-            <FormControl sx={{ m: 1, width: "50ch" }}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  renderInput={(props) => <TextField {...props} />}
-                  label="Brifing DateTime"
-                  value={bfdatetime}
-                  onChange={(newValue) => {
-                    setBfdatetime(newValue);
-                  }}
-                />
-              </LocalizationProvider>
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "50ch" }}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <TimePicker
-                  label="Pick Up Time"
-                  value={picktime}
-                  onChange={(newValue) => {
-                    setPicktime(newValue);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Outword Journey"
-                variant="outlined"
-                required
-                type="text"
-                value={outwordjourney}
-                onChange={(e) => setOutwordJourney(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Return Journey"
-                variant="outlined"
-                required
-                type="text"
-                value={returnjourney}
-                onChange={(e) => setReturnjourney(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Hotel in AA.CC."
-                variant="outlined"
-                required
-                type="text"
-                value={hotelinaacc}
-                onChange={(e) => setHotelinaacc(e.target.value)}
-              />
-            </FormControl>
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid item xs={12} sm={2} md={2}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      renderInput={(props) => <TextField {...props} />}
+                      label="Brifing DateTime"
+                      value={bfdatetime}
+                      onChange={(newValue) => {
+                        setBfdatetime(newValue);
+                      }}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={2} md={2}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <TimePicker
+                      label="Pick Up Time"
+                      value={picktime}
+                      onChange={(newValue) => {
+                        setPicktime(newValue);
+                      }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={2} md={2}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Outword Journey"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={outwordjourney}
+                    onChange={(e) => setOutwordJourney(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={3} md={3}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Return Journey"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={returnjourney}
+                    onChange={(e) => setReturnjourney(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={3} md={3}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Hotel in AA.CC."
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={hotelinaacc}
+                    onChange={(e) => setHotelinaacc(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
 
             {/* TODO: CUARTO GRUPO */}
-            <FormControl sx={{ m: 1, width: "55ch" }}>
-              <TextField
-                label="Full Name"
-                variant="outlined"
-                required
-                type="text"
-                value={fullname}
-                onChange={(e) => setFullname(e.target.value)}
-              />
-            </FormControl>
-            <FormControl sx={{ m: 1, width: "55ch" }}>
-              <TextField
-                label="Passport"
-                variant="outlined"
-                required
-                type="text"
-                value={passport}
-                onChange={(e) => setPassport(e.target.value)}
-              />
-            </FormControl>
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid item xs={12} sm={6} md={6}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Full Name"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={fullname}
+                    onChange={(e) => setFullname(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6} md={6}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Passport"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={passport}
+                    onChange={(e) => setPassport(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
 
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Birthdate"
-                variant="outlined"
-                required
-                type="text"
-                value={birthday}
-                onChange={(e) => setBirthday(e.target.value)}
-              />
-            </FormControl>
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Birthdate"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={birthday}
+                    onChange={(e) => setBirthday(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <InputLabel id="nationality">Nationality</InputLabel>
+                  <Select
+                    value={nationality}
+                    label="Nationality"
+                    onChange={handleNationality}
+                  >
+                    <MenuItem value={"Peru"}>Peru</MenuItem>
+                    <MenuItem value={"Argentina"}>Argentina</MenuItem>
+                    <MenuItem value={"Chile"}>Chile</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <InputLabel id="gender">Gender</InputLabel>
+                  <Select value={gender} label="Gender" onChange={handleGender}>
+                    <MenuItem value={"Male"}>Male</MenuItem>
+                    <MenuItem value={"Female"}>Female</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
 
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <InputLabel id="nationality">Nationality</InputLabel>
-              <Select
-                value={nationality}
-                label="Nationality"
-                onChange={handleNationality}
-              >
-                <MenuItem value={"Peru"}>Peru</MenuItem>
-                <MenuItem value={"Argentina"}>Argentina</MenuItem>
-                <MenuItem value={"Chile"}>Chile</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <InputLabel id="gender">Gender</InputLabel>
-              <Select value={gender} label="Gender" onChange={handleGender}>
-                <MenuItem value={"Male"}>Male</MenuItem>
-                <MenuItem value={"Female"}>Female</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <InputLabel id="sex">Adult/Stundet</InputLabel>
-              <Select
-                value={adults}
-                label="Adult/Stundet"
-                onChange={handleAdults}
-              >
-                <MenuItem value={"Adult"}>Adult</MenuItem>
-                <MenuItem value={"Student"}>Student</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Phone Number"
-                variant="outlined"
-                required
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Email"
-                variant="outlined"
-                required
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </FormControl>
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <InputLabel id="sex">Adult/Stundet</InputLabel>
+                  <Select
+                    value={adults}
+                    label="Adult/Stundet"
+                    onChange={handleAdults}
+                  >
+                    <MenuItem value={"Adult"}>Adult</MenuItem>
+                    <MenuItem value={"Student"}>Student</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Phone Number"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Email"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
 
             {/* TODO: QUINTO GRUPO GRUPO */}
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Entrance Type"
-                variant="outlined"
-                required
-                type="text"
-                value={entrancetype}
-                onChange={(e) => setEntrancetype(e.target.value)}
-              />
-            </FormControl>
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Entrance Type"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={entrancetype}
+                    onChange={(e) => setEntrancetype(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Bus Consettur"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={bus}
+                    onChange={(e) => setBus(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="BTG"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={btg}
+                    onChange={(e) => setBtg(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
 
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Bus Consettur"
-                variant="outlined"
-                required
-                type="text"
-                value={bus}
-                onChange={(e) => setBus(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="BTG"
-                variant="outlined"
-                required
-                type="text"
-                value={btg}
-                onChange={(e) => setBtg(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Food Restrictions"
-                variant="outlined"
-                required
-                type="text"
-                value={food}
-                onChange={(e) => setFood(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Tour Inclusions"
-                variant="outlined"
-                required
-                type="text"
-                value={tourinclusions}
-                onChange={(e) => setTourinclusions(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "33ch" }}>
-              <TextField
-                label="Notes"
-                variant="outlined"
-                required
-                type="text"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-              />
-            </FormControl>
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Food Restrictions"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={food}
+                    onChange={(e) => setFood(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Tour Inclusions"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={tourinclusions}
+                    onChange={(e) => setTourinclusions(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Notes"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
 
             {/* TODO: SEXTO GRUPO GRUPO */}
 
-            <FormControl sx={{ m: 1, width: "20ch" }}>
-              <TextField
-                label="Soles Cash"
-                variant="outlined"
-                required
-                type="text"
-                value={solescash}
-                onChange={(e) => setSolescash(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "20ch" }}>
-              <TextField
-                label="Dollars Cash"
-                variant="outlined"
-                required
-                type="text"
-                value={dollarcash}
-                onChange={(e) => setDollarcash(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "20ch" }}>
-              <TextField
-                label="Card Credit/Debit"
-                variant="outlined"
-                required
-                type="text"
-                value={card}
-                onChange={(e) => setCard(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "20ch" }}>
-              <TextField
-                label="Balance Soles"
-                variant="outlined"
-                required
-                type="text"
-                value={balancesoles}
-                onChange={(e) => setBalancesoles(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: "20ch" }}>
-              <TextField
-                label="Balance Dollars"
-                variant="outlined"
-                required
-                type="text"
-                value={balancedollar}
-                onChange={(e) => setBalancedollar(e.target.value)}
-              />
-            </FormControl>
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid item xs={12} sm={2} md={2}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Soles Cash"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={solescash}
+                    onChange={(e) => setSolescash(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">S/.</InputAdornment>
+                      ),
+                    }}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={2} md={2}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Dollars Cash"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={dollarcash}
+                    onChange={(e) => setDollarcash(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">$</InputAdornment>
+                      ),
+                    }}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={2} md={2}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Card Credit/Debit"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={card}
+                    onChange={(e) => setCard(e.target.value)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={3} md={3}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Balance Soles"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={balancesoles}
+                    onChange={(e) => setBalancesoles(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">S/.</InputAdornment>
+                      ),
+                    }}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={3} md={3}>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    label="Balance Dollars"
+                    variant="outlined"
+                    required
+                    type="text"
+                    value={balancedollar}
+                    onChange={(e) => setBalancedollar(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">$</InputAdornment>
+                      ),
+                    }}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
 
             {/* TODO: GRUPO BOTONES */}
             <Stack direction="row" spacing={2}>
@@ -584,7 +728,7 @@ export default function EditReservations() {
               </Link>
 
               <Button type="submit" variant="contained" color="primary">
-                Add Reservations
+                Edit Reservation
               </Button>
             </Stack>
           </form>

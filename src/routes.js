@@ -5,21 +5,26 @@ import DashboardLayout from "./layouts/dashboard";
 import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 //
 import Blog from "./pages/Blog";
-import User from "./pages/User";
+import DashboardApp from "./pages/DashboardApp";
 import Login from "./pages/Login";
 import NotFound from "./pages/Page404";
 import Register from "./pages/Register";
 import Products from "./pages/Products";
-import Tours from "./pages/Tours";
+//TODO USERS ROUTES
+import Users from "./pages/Users";
+import User from "./pages/Users/User";
+import NewUser from "./pages/Users/NewUser";
+import EditUser from "./pages/Users/EditUser";
+//TODO TOURS ROUTES
+import Tours from "./pages/Tours/Tours";
 import NewTour from "./pages/Tours/NewTour";
 import EditTour from "./pages/Tours/EditTour";
+//TODO RESERVATIONS ROUTES
 import Reservations from "./pages/Reservations/Reservations";
 import NewReservations from "./pages/Reservations/NewReservations";
 import EditReservations from "./pages/Reservations/EditReservations";
-import NewUser from "./pages/NewUser";
-import DashboardApp from "./pages/DashboardApp";
+//TODO CONTEXT
 import { AuthContext } from "./context/AuthContext";
-import EditUser from "./pages/EditUser";
 
 // ----------------------------------------------------------------------
 //CODIGO DE FIREBASE USARIO ACTIVO
@@ -93,6 +98,15 @@ export default function Router() {
           element: (
             <RequireAuth>
               <EditTour />
+            </RequireAuth>
+          ),
+        },
+
+        {
+          path: "users",
+          element: (
+            <RequireAuth>
+              <Users />
             </RequireAuth>
           ),
         },
