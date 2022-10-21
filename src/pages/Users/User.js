@@ -29,7 +29,6 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 // components
 import Page from "../../components/Page";
-import Reservationslist from "../Reservations/Components/ReservationsList";
 // ----------------------------------------------------------------------
 
 export default function User() {
@@ -154,12 +153,6 @@ export default function User() {
               disableSelectionOnClick
               experimentalFeatures={{ newEditingApi: true }}
             />
-          </Box>
-        </Card>
-
-        <Card>
-          <Box sx={{ height: 400, width: "100%" }}>
-            <Reservationslist />
           </Box>
         </Card>
       </Container>

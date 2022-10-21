@@ -2,11 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-//FIREBASE
-import { db } from "../../firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+// TODO SUPABASE CLIENT
+import { supabase } from "../../supabse/client";
 
-// material
+// TODO MATERIAL COMPONENTS
 import {
   Button,
   Box,
@@ -16,33 +15,33 @@ import {
   FormControl,
   TextField,
 } from "@mui/material";
-// components
+// TODO COMPONENTS
 import Page from "../../components/Page";
 
 export default function NewTour() {
-  //CODIGO REGISTRO DE USUARIO
+  //TODO CODIGO INPUTS TOURS
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  //CODIGO ADD USER
+  //TODO ADD TOUR
   const handleAdd = async (e) => {
     e.preventDefault();
-    try {
-      //REGISTRO DE USUARIO EN LA COLECCION
-      await addDoc(collection(db, "tours"), {
-        name: name,
-        description: description,
-        timeStamp: serverTimestamp(),
-      });
-      navigate("/dashboard/tours");
-    } catch (error) {
+
+    const { data, error } = await supabase
+      .from("tours")
+      .insert([{ name, description }]);
+
+    if (error) {
       console.log(error);
+    }
+    if (data) {
+      console.log(data);
+      navigate("/dashboard/tours");
     }
   };
 
-  //CODIGO DE LA PLANTILLA
-
+  // TODO CODIGO DE LA PLANTILLA
   return (
     <Page title="New Tour">
       <Container>

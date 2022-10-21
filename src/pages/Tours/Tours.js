@@ -1,15 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-//FIREBASE
-import {
-  collection,
-  query,
-  onSnapshot,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
-import { db } from "../../firebase";
+// TODO SUPABASE CLIENT
+import { supabase } from "../../supabse/client";
+
 // material
 import {
   Card,
@@ -29,30 +23,47 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Page from "../../components/Page";
 
 export default function Tours() {
-  //CODIGO OBTENCION DE USUARIOS
+  //TODO: FETCH TOURS
   const [tours, setTours] = useState([]);
+  console.log(tours);
 
-  //READ USERS FROM FIREBASE
   useEffect(() => {
-    const q = query(collection(db, "tours"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let toursArr = [];
-      querySnapshot.forEach((doc) => {
-        toursArr.push({ ...doc.data(), id: doc.id });
-      });
-      setTours(toursArr);
-    });
-    return () => unsubscribe();
+    const fetchDataSupabase = async () => {
+      const { error, data } = await supabase
+        .from("tours")
+        .select()
+        .order("created_at", { ascending: false });
+      if (error) {
+        setTours([]);
+      }
+      if (data) {
+        setTours(data);
+      }
+    };
+    fetchDataSupabase();
   }, []);
 
-  //DELETE USERS
+  //TODO: DELETE TOURS
 
   const deleteUsers = async (id) => {
-    await deleteDoc(doc(db, "tours", id));
+    const { data, error } = await supabase.from("tours").delete().eq("id", id);
+
+    if (error) {
+      console.log(error);
+    }
+    if (data) {
+      console.log(data);
+    }
+    setTours(tours.filter((tour) => tour.id !== id));
   };
 
-  //CODIGO DATAGRID
+  //TODO: CODIGO DATAGRID
   const columns = [
+    {
+      field: "id",
+      headerName: "ID",
+      width: 50,
+    },
     {
       field: "name",
       headerName: "Name",
@@ -98,21 +109,7 @@ export default function Tours() {
     },
   ];
 
-  //Refencia a la BD Firestore
-  // const usersCollection = collection(db, "users");
-  //Funcion para mostrar todos los usuarios
-  /* const getUsers = async () => {
-   const data = await getDocs(usersCollection);
-   setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-   console.log(users);
- };
- //usamos useEffect
- useEffect(() => {
-   getUsers();
- }, []); */
-
-  //CODIGO DE LA PLANTILLA
-
+  //TODO: CODIGO DE LA PLANTILLA
   return (
     <Page title="Tours List">
       <Container>

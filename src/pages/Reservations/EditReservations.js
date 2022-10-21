@@ -1,17 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-//FIREBASE
-import { db } from "../../firebase";
-import {
-  doc,
-  updateDoc,
-  getDoc,
-  collection,
-  getDocs,
-} from "firebase/firestore";
+//TODO: COUNTRIES JSON
+import Countries from "../../utils/countries.json";
 
-// material
+//TODO: SUPABASE CLIENT
+import { supabase } from "../../supabse/client";
+
+//TODO: FIREBASE USER ACTIVE
+import { AuthContext } from "../../context/AuthContext";
+
+//TODO: FIBASE
+import { db } from "../../firebase";
+import { doc, getDoc } from "firebase/firestore";
+
+//TODO: MATERIAL COMPONENTS
 import {
   Button,
   Box,
@@ -31,55 +34,74 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-// components
+
+//TODO: COMPONENTS
 import Page from "../../components/Page";
 
 export default function EditReservations() {
-  //TODO RECUPERANDO LOS TOURS
-  const [tours, setTours] = useState([]);
+  //TODO: ID RESERVATIONS
+  const { currentUser } = useContext(AuthContext);
+  //TODO:  console.log(currentUser.uid);
 
+  const [user, setUser] = useState({});
+  const userName = user.name;
+  console.log(userName);
+
+  const docRef = doc(db, "users", currentUser.uid);
   useEffect(() => {
-    const toursCollection = collection(db, "tours");
-    const getCollection = async () => {
-      const data = await getDocs(toursCollection);
-      setTours(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    const getUser = async () => {
+      await getDoc(docRef).then((doc) =>
+        setUser({ ...doc.data(), id: doc.id })
+      );
     };
-    getCollection();
+    getUser();
   }, []);
 
-  //DATOS
+  //TODO: DATA
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [bnumber, setBnumber] = useState("");
-  const [bdate, setBdate] = useState(new Date());
-  console.log(bdate);
-  const [counter, setCounter] = useState("");
+  //TODO: FETCH TOURS
+  const [tours, setTours] = useState([]);
+  useEffect(() => {
+    const fetchDataSupabase = async () => {
+      const { error, data } = await supabase
+        .from("tours")
+        .select()
+        .order("created_at", { ascending: false });
+      if (error) {
+        setTours([]);
+      }
+      if (data) {
+        setTours(data);
+      }
+    };
+    fetchDataSupabase();
+  }, []);
 
-  //SEGUNDO GRUPO
+  //TODO: INPUTS
+  //TODO: PRIMER GRUPO
+
+  //TODO: SEGUNDO GRUPO
   const [tour, setTour] = useState("");
   const handleTour = (event) => {
     setTour(event.target.value);
   };
   const [startdate, setStartdate] = useState(new Date());
-  console.log(startdate);
   const [enddate, setEnddate] = useState(new Date());
-  console.log(enddate);
   const [hotelcusco, setHotelCusco] = useState("");
 
-  //TERCER GRUPO
+  //TODO: TERCER GRUPO
   const [bfdatetime, setBfdatetime] = useState(new Date());
-  console.log("Date Time", bfdatetime);
-  const [picktime, setPicktime] = useState(null);
-  console.log("Pick Time", picktime);
+  const [picktime, setPicktime] = useState(new Date());
   const [outwordjourney, setOutwordJourney] = useState("");
   const [returnjourney, setReturnjourney] = useState("");
   const [hotelinaacc, setHotelinaacc] = useState("");
 
-  //CUARTO GRUPO
+  //TODO: CUARTO GRUPO
   const [fullname, setFullname] = useState("");
   const [passport, setPassport] = useState("");
-  const [birthday, setBirthday] = useState("");
+  const [birthday, setBirthday] = useState(new Date());
   const [nationality, setNationality] = useState("");
   const handleNationality = (event) => {
     setNationality(event.target.value);
@@ -95,7 +117,7 @@ export default function EditReservations() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
 
-  //QUINTO GRUPO
+  //TODO: QUINTO GRUPO
   const [entrancetype, setEntrancetype] = useState("");
   const [bus, setBus] = useState("");
   const [btg, setBtg] = useState("");
@@ -103,115 +125,108 @@ export default function EditReservations() {
   const [tourinclusions, setTourinclusions] = useState("");
   const [notes, setNotes] = useState("");
 
-  //SEXTO GRUPO
+  //TODO: SEXTO GRUPO
   const [solescash, setSolescash] = useState("");
   const [dollarcash, setDollarcash] = useState("");
   const [card, setCard] = useState("");
   const [balancesoles, setBalancesoles] = useState("");
   const [balancedollar, setBalancedollar] = useState("");
 
-  //CODIGO USER UPDATE
+  //TODO: FETCH SINGLE SUPABASE RESERVATIONS
+  useEffect(() => {
+    const fetchReservations = async () => {
+      const { data, error } = await supabase
+        .from("reservations")
+        .select()
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        navigate("/dashboard/reservations", { replace: true });
+      }
+      if (data) {
+        setTour(data.tour);
+        setStartdate(data.startdate);
+        setEnddate(data.enddate);
+        setHotelCusco(data.hotelcusco);
+        setBfdatetime(data.bfdatetime);
+        setPicktime(data.picktime);
+        setOutwordJourney(data.outwordjourney);
+        setReturnjourney(data.returnjourney);
+        setHotelinaacc(data.hotelinaacc);
+        setFullname(data.fullname);
+        setPassport(data.passport);
+        setBirthday(data.birthday);
+        setNationality(data.nationality);
+        setGender(data.gender);
+        setAdults(data.adults);
+        setPhone(data.phone);
+        setEmail(data.email);
+        setEntrancetype(data.entrancetype);
+        setBus(data.bus);
+        setBtg(data.btg);
+        setFood(data.food);
+        setTourinclusions(data.tourinclusions);
+        setNotes(data.notes);
+        setSolescash(data.solescash);
+        setDollarcash(data.dollarcash);
+        setCard(data.card);
+        setBalancesoles(data.balancesoles);
+        setBalancedollar(data.balancedollar);
+      }
+    };
+    fetchReservations();
+  }, [id, navigate]);
+
+  //TODO: SUPABASE UPDATE RESERVATIONS
+
   const updateReservations = async (e) => {
     e.preventDefault();
-    try {
-      //UPDATE RESERVATIONS
-      const reservation = doc(db, "reservations", id);
-      const data = {
-        //TODO PRIMER GRUPO
-        bookingNumber: bnumber,
-        bookingDate: bdate,
-        counter: counter,
-        //TODO SEGUNDO GRUPO
-        tour: tour,
-        startDate: startdate,
-        endDate: enddate,
-        hotelCusco: hotelcusco,
-        //TODO TERCER GRUPO
-        bfdatetime: bfdatetime,
-        picktime: picktime,
-        outwordjourney: outwordjourney,
-        returnjourney: returnjourney,
-        hotelinaacc: hotelinaacc,
-        //TODO CUARTO GRUPO
-        fullname: fullname,
-        passport: passport,
-        birthday: birthday,
-        nationality: nationality,
-        gender: gender,
-        adults: adults,
-        phone: phone,
-        email: email,
-        //TODO QUINTO GRUPO
-        entrancetype: entrancetype,
-        bus: bus,
-        btg: btg,
-        food: food,
-        tourinclusions: tourinclusions,
-        notes: notes,
-        //TODO SEXTO GRUPO
-        solescash: solescash,
-        dollarcash: dollarcash,
-        card: card,
-        balancesoles: balancesoles,
-        balancedollar: balancedollar,
-      };
-      await updateDoc(reservation, data);
+    const { data, error } = await supabase
+      .from("reservations")
+      .update({
+        tour,
+        startdate,
+        enddate,
+        hotelcusco,
+        bfdatetime,
+        picktime,
+        outwordjourney,
+        returnjourney,
+        hotelinaacc,
+        fullname,
+        passport,
+        birthday,
+        nationality,
+        gender,
+        adults,
+        phone,
+        email,
+        entrancetype,
+        bus,
+        btg,
+        food,
+        tourinclusions,
+        notes,
+        solescash,
+        dollarcash,
+        card,
+        balancesoles,
+        balancedollar,
+        updateTourCounter: userName,
+      })
+      .eq("id", id);
+
+    if (error) {
+      console.log(error);
+    }
+    if (data) {
+      console.log(data);
       navigate("/dashboard/reservations");
-    } catch (error) {
-      //console.log(error);
     }
   };
 
-  const getReservationById = async (id) => {
-    const reservation = await getDoc(doc(db, "reservations", id));
-    if (reservation.exists()) {
-      //TODO PRIMER GRUPO
-      setBnumber(reservation.data().bookingNumber);
-      setBdate(reservation.data().bookingDate.toDate());
-      setCounter(reservation.data().counter);
-      //TODO SEGUNDO GRUPO
-      setTour(reservation.data().tour);
-      setStartdate(reservation.data().startDate.toDate());
-      setEnddate(reservation.data().endDate.toDate());
-      setHotelCusco(reservation.data().hotelCusco);
-      //TODO TERCER GRUPO
-      setBfdatetime(reservation.data().bfdatetime.toDate());
-      setPicktime(reservation.data().picktime.toDate());
-      setOutwordJourney(reservation.data().outwordjourney);
-      setReturnjourney(reservation.data().returnjourney);
-      setHotelinaacc(reservation.data().hotelinaacc);
-      //TODO CUARTO GRUPO
-      setFullname(reservation.data().fullname);
-      setPassport(reservation.data().passport);
-      setBirthday(reservation.data().birthday);
-      setNationality(reservation.data().nationality);
-      setGender(reservation.data().gender);
-      setAdults(reservation.data().adults);
-      setPhone(reservation.data().phone);
-      setEmail(reservation.data().email);
-      //TODO QUINTO GRUPO
-      setEntrancetype(reservation.data().entrancetype);
-      setBus(reservation.data().bus);
-      setBtg(reservation.data().btg);
-      setFood(reservation.data().food);
-      setTourinclusions(reservation.data().tourinclusions);
-      setNotes(reservation.data().notes);
-      //TODO SEXTO GRUPO
-      setSolescash(reservation.data().solescash);
-      setDollarcash(reservation.data().dollarcash);
-      setCard(reservation.data().card);
-      setBalancesoles(reservation.data().balancesoles);
-      setBalancedollar(reservation.data().balancedollar);
-      console.log(reservation.data());
-    } else {
-      alert("Tour Not Exists");
-    }
-  };
-
-  useEffect(() => {
-    getReservationById(id);
-  }, []);
-
+  //TODO: CODIGO DE LA PLANTILLA
   return (
     <Page title="Update Reservations">
       <Container>
@@ -228,56 +243,6 @@ export default function EditReservations() {
 
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <form onSubmit={updateReservations}>
-            <Grid
-              container
-              spacing={{ xs: 2, md: 3 }}
-              columns={{ xs: 4, sm: 8, md: 12 }}
-            >
-              <Grid item xs={12} sm={4} md={4}>
-                <FormControl fullWidth sx={{ m: 1 }}>
-                  <TextField
-                    label="Booking Number"
-                    variant="outlined"
-                    required
-                    type="text"
-                    value={bnumber}
-                    onChange={(e) => setBnumber(e.target.value)}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={4} md={4}>
-                <FormControl fullWidth sx={{ m: 1 }}>
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <Stack spacing={3}>
-                      <DatePicker
-                        label="Booking date"
-                        value={bdate}
-                        onChange={(newValue) => {
-                          setBdate(newValue);
-                        }}
-                        inputFormat="yyyy-MM-dd"
-                        renderInput={(params) => (
-                          <TextField {...params} helperText={null} />
-                        )}
-                      />
-                    </Stack>
-                  </LocalizationProvider>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={4} md={4}>
-                <FormControl fullWidth sx={{ m: 1 }}>
-                  <TextField
-                    label="Counter"
-                    variant="outlined"
-                    required
-                    type="text"
-                    value={counter}
-                    onChange={(e) => setCounter(e.target.value)}
-                  />
-                </FormControl>
-              </Grid>
-            </Grid>
-
             {/* TODO: SEGUNDO GRUPO */}
             <Grid
               container
@@ -464,14 +429,22 @@ export default function EditReservations() {
             >
               <Grid item xs={12} sm={4} md={4}>
                 <FormControl fullWidth sx={{ m: 1 }}>
-                  <TextField
-                    label="Birthdate"
-                    variant="outlined"
-                    required
-                    type="text"
-                    value={birthday}
-                    onChange={(e) => setBirthday(e.target.value)}
-                  />
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Stack spacing={3}>
+                      <DatePicker
+                        openTo="year"
+                        views={["year", "month", "day"]}
+                        label="Birthdate"
+                        value={birthday}
+                        onChange={(newValue) => {
+                          setBirthday(newValue);
+                        }}
+                        renderInput={(params) => (
+                          <TextField {...params} helperText={null} />
+                        )}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={4} md={4}>
@@ -482,9 +455,13 @@ export default function EditReservations() {
                     label="Nationality"
                     onChange={handleNationality}
                   >
-                    <MenuItem value={"Peru"}>Peru</MenuItem>
-                    <MenuItem value={"Argentina"}>Argentina</MenuItem>
-                    <MenuItem value={"Chile"}>Chile</MenuItem>
+                    {Countries.map((single) => {
+                      return (
+                        <MenuItem key={single.code} value={single.name}>
+                          {single.name}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>

@@ -1,26 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
 import moment from "moment";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
+//TODO: SUPABASE CLIENT
 import { supabase } from "../../supabse/client";
 
-//FIREBASE
-import {
-  collection,
-  query,
-  onSnapshot,
-  deleteDoc,
-  doc,
-  getDocs,
-  where,
-  orderBy,
-} from "firebase/firestore";
-import { db } from "../../firebase";
-// material
+//TODO: MATERIAL COMPONENTS
 import {
   Card,
+  CardActions,
+  CardContent,
+  CardMedia,
   Box,
   Stack,
   Button,
@@ -28,100 +18,102 @@ import {
   Typography,
   IconButton,
   Tooltip,
-  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Delete, Edit, Preview } from "@mui/icons-material";
 
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
-// components
+//TODO: COMPONENTS
 import Page from "../../components/Page";
-import Reservationslist from "./Components/ReservationsList";
 
 export default function Reservations() {
-  //TODO DATE FILTER
-
-  const [dateFilter, setDateFilter] = useState(moment());
-  console.log(dateFilter);
-
-  const dateEqual = moment(dateFilter).format("YYYY-MM-DD");
-  console.log(dateEqual);
-
-  // TODO CODIGO OBTENCION DE USUARIOS
+  const imageUrl = "/static/images/machupicchu.jpg";
+  //TODO: FETCH RESERVATIONS
   const [reservations, setReservations] = useState([]);
-  console.log(reservations);
-  // TODO READ USERS FROM FIREBASE
-  useEffect(() => {
-    const q = query(
-      collection(db, "reservations"),
-      orderBy("bookingDate", "desc")
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let reservationsArr = [];
-      querySnapshot.forEach((doc) => {
-        reservationsArr.push({ ...doc.data(), id: doc.id });
-      });
-      setReservations(reservationsArr);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  //TODO SUPABASE DATAGRID
-  const [supabaseReservations, setSuperReservations] = useState([]);
-  console.log(supabaseReservations);
   useEffect(() => {
     const fetchDataSupabase = async () => {
-      const { error, data } = await supabase.from("reservations").select();
+      const { error, data } = await supabase
+        .from("reservations")
+        .select()
+        .order("created_at", { ascending: false });
+
       if (error) {
-        setSuperReservations([]);
+        setReservations([]);
       }
+
       if (data) {
-        setSuperReservations(data);
+        setReservations(data);
       }
     };
     fetchDataSupabase();
   }, []);
 
-  // TODO DELETE USERS
-  const deleteUsers = async (id) => {
-    await deleteDoc(doc(db, "reservations", id));
+  //TODO: DELETE RESERVATIONS
+  const deleteReservation = async (id) => {
+    const { data, error } = await supabase
+      .from("reservations")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.log(error);
+    }
+    if (data) {
+      console.log(data);
+    }
+    setReservations(
+      reservations.filter((reservation) => reservation.id !== id)
+    );
   };
 
-  //TODO CONSULTA QUERY
-  const handleQuery = async (e) => {
-    e.preventDefault();
-    const q = query(
-      collection(db, "reservations"),
-      where("bookingDate", "==", new Date(dateEqual))
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let queryArray = [];
-      querySnapshot.forEach((doc) => {
-        queryArray.push({ ...doc.data(), id: doc.id });
-      });
-      setReservations(queryArray);
-    });
-    return () => unsubscribe();
+  //TODO: MODAL
+  const [open, setOpen] = useState(false);
+  const [detail, setDetail] = useState([]);
+  console.log(detail);
+
+  const handleClickOpen = async (id) => {
+    setOpen(true);
+    const detailReservation = async () => {
+      const { data, error } = await supabase
+        .from("reservations")
+        .select()
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        setDetail(data);
+      }
+    };
+    detailReservation();
   };
-  // TODO CODIGO DATAGRID
-  const columns = [
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  //TODO: COLUMNAS DATAGRID SUPABASE
+  const columnas = [
     {
-      field: "bookingNumber",
+      field: "id",
       headerName: "Booking Number",
       width: 150,
+      renderCell: (params) => "MR-00" + params.value,
     },
     {
-      field: "bookingDate",
+      field: "bdate",
       headerName: "Booking Date",
       editable: true,
-
+      type: "date",
+      renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
       width: 150,
-      renderCell: (params) =>
-        moment(params.row.bookingDate.toDate().toUTCString()).format(
-          "DD/MM/YYYY"
-        ),
     },
     {
       field: "counter",
@@ -136,23 +128,21 @@ export default function Reservations() {
       width: 250,
     },
     {
-      field: "startDate",
+      field: "startdate",
       headerName: "Start Date",
       type: "date",
       width: 120,
-      valueFormatter: (params) =>
-        moment(params.value.toDate()).format("YYYY-MM-DD"),
+      renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
     },
     {
-      field: "endDate",
+      field: "enddate",
       headerName: "End Date",
       type: "date",
       width: 120,
-      valueFormatter: (params) =>
-        moment(params.value.toDate()).format("YYYY-MM-DD"),
+      renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
     },
     {
-      field: "hotelCusco",
+      field: "hotelcusco",
       headerName: "Hotel Cusco",
       width: 150,
     },
@@ -162,16 +152,14 @@ export default function Reservations() {
       headerName: "Briefing DateTime",
       type: "date",
       width: 180,
-      valueFormatter: (params) =>
-        moment(params.value.toDate()).format("YYYY-MM-DD HH:mm:ss"),
+      renderCell: (params) =>
+        moment(params.value).format("DD/MM/YYYY HH:mm:ss"),
     },
     {
       field: "picktime",
       headerName: "Pick Up Time",
-      type: "date",
-      width: 120,
-      valueFormatter: (params) =>
-        moment(params.value.toDate()).format("HH:mm:ss"),
+      width: 150,
+      renderCell: (params) => moment(params.value).format("HH:mm:ss"),
     },
     {
       field: "outwordjourney",
@@ -281,7 +269,7 @@ export default function Reservations() {
       headerName: "Balance Dollars",
       width: 150,
     },
-    /* //TODO ACTIONS
+    //TODO: ACTIONS
     {
       field: "actions",
       headerName: "Actions",
@@ -291,7 +279,12 @@ export default function Reservations() {
       getActions: (reservations) => [
         <Box>
           <Tooltip title="View Details">
-            <IconButton color="success">
+            <IconButton
+              color="success"
+              onClick={() => {
+                handleClickOpen(reservations.id);
+              }}
+            >
               <Preview />
             </IconButton>
           </Tooltip>
@@ -306,7 +299,7 @@ export default function Reservations() {
             <IconButton
               color="error"
               onClick={() => {
-                deleteUsers(reservations.id);
+                deleteReservation(reservations.id);
               }}
             >
               <Delete />
@@ -314,47 +307,14 @@ export default function Reservations() {
           </Tooltip>
         </Box>,
       ],
-    }, */
-  ];
-
-  const columnas = [
-    {
-      field: "bookingNumber",
-      headerName: "Booking Number",
-      width: 150,
-    },
-    {
-      field: "bookingDate",
-      headerName: "Booking Number",
-      editable: true,
-      type: "date",
-      renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
-      width: 250,
-    },
-    {
-      field: "created_at",
-      headerName: "Created At",
-      editable: true,
-      type: "date",
-      renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
-      width: 250,
     },
   ];
 
-  //Refencia a la BD Firestore
-  // const usersCollection = collection(db, "users");
-  //Funcion para mostrar todos los usuarios
-  /* const getUsers = async () => {
-   const data = await getDocs(usersCollection);
-   setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-   console.log(users);
- };
- //usamos useEffect
- useEffect(() => {
-   getUsers();
- }, []); */
+  //TODO: URL WHATSAPP
+  const urlWhatsApp = "Lorem";
+  console.log(urlWhatsApp);
 
-  //CODIGO DE LA PLANTILLA
+  //TODO: CODIGO DE LA PLANTILLA
 
   return (
     <Page title="Reservations List">
@@ -375,47 +335,10 @@ export default function Reservations() {
           </Link>
         </Stack>
 
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={5}
-        >
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="Date Filter"
-              value={dateFilter}
-              onChange={(newValue) => {
-                setDateFilter(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-          <Button variant="contained" color="primary" onClick={handleQuery}>
-            Filter Reservation
-          </Button>
-        </Stack>
-
-        <Card>
-          <Box sx={{ height: 300, width: "100%" }}>
-            <DataGrid
-              rows={reservations}
-              columns={columns}
-              pageSize={10}
-              getRowId={(row) => row.id}
-              components={{ Toolbar: GridToolbar }}
-              rowsPerPageOptions={[5, 10, 20]}
-              checkboxSelection
-              disableSelectionOnClick
-              experimentalFeatures={{ newEditingApi: true }}
-            />
-          </Box>
-        </Card>
-
         <Card>
           <Box sx={{ height: 500, width: "100%" }}>
             <DataGrid
-              rows={supabaseReservations}
+              rows={reservations}
               columns={columnas}
               pageSize={10}
               components={{ Toolbar: GridToolbar }}
@@ -427,11 +350,58 @@ export default function Reservations() {
           </Box>
         </Card>
 
-        {/* <Card>
-          <Box sx={{ height: 700, width: "100%" }}>
-            <Reservationslist />
-          </Box>
-        </Card> */}
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          maxWidth="md"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Details of the Reserve  "}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <Card sx={{ maxWidth: 450 }}>
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={imageUrl}
+                  alt="Machu Picchu"
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h6" component="div">
+                    TOUR: {detail.tour}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <a
+                    href={
+                      "https://wa.me/51" +
+                      detail.phone +
+                      "?text=I'm%20interested%20in%20your%20car%20for%20sale"
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="outlined" startIcon={<Delete />}>
+                      WhatsApp
+                    </Button>
+                  </a>
+                  <Button variant="outlined" startIcon={<Delete />}>
+                    Email
+                  </Button>
+                </CardActions>
+              </Card>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Disagree</Button>
+            <Button onClick={handleClose} autoFocus>
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </Page>
   );

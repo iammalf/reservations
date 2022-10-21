@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useEffect } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 // material
 import { styled } from "@mui/material/styles";
@@ -22,6 +22,13 @@ import Scrollbar from "../../components/Scrollbar";
 import NavSection from "../../components/NavSection";
 //
 import navConfig from "./NavConfig";
+
+//TODO: FIREBASE USER ACTIVE
+import { AuthContext } from "../../context/AuthContext";
+
+//TODO: FIBASE
+import { db } from "../../firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 // ----------------------------------------------------------------------
 
@@ -50,6 +57,23 @@ DashboardSidebar.propTypes = {
 };
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
+  //TODO: ID RESERVATIONS
+  const { currentUser } = useContext(AuthContext);
+  //TODO:  console.log(currentUser.uid);
+
+  const [user, setUser] = useState({});
+  const userName = user.name;
+
+  const docRef = doc(db, "users", currentUser.uid);
+  useEffect(() => {
+    const getUser = async () => {
+      await getDoc(docRef).then((doc) =>
+        setUser({ ...doc.data(), id: doc.id })
+      );
+    };
+    getUser();
+  }, []);
+
   const { pathname } = useLocation();
 
   const isDesktop = useResponsive("up", "lg");
@@ -75,13 +99,14 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ px: 2.5, py: 3, display: "inline-flex" }}>
         <Logo />
       </Box>
+
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
             <Avatar src={account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-                {account.displayName}
+                {userName}
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 {account.role}

@@ -26,11 +26,7 @@ const navConfig = [
     path: "/dashboard/user",
     icon: getIcon("eva:people-fill"),
   },
-  {
-    title: "users",
-    path: "/dashboard/users",
-    icon: getIcon("eva:people-fill"),
-  },
+
   /* {
     title: "product",
     path: "/dashboard/products",

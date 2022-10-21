@@ -4,14 +4,12 @@ import { Navigate, useRoutes } from "react-router-dom";
 import DashboardLayout from "./layouts/dashboard";
 import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 //
-import Blog from "./pages/Blog";
 import DashboardApp from "./pages/DashboardApp";
 import Login from "./pages/Login";
 import NotFound from "./pages/Page404";
 import Register from "./pages/Register";
-import Products from "./pages/Products";
 //TODO USERS ROUTES
-import Users from "./pages/Users";
+
 import User from "./pages/Users/User";
 import NewUser from "./pages/Users/NewUser";
 import EditUser from "./pages/Users/EditUser";
@@ -35,7 +33,7 @@ export default function Router() {
   const RequireAuth = ({ children }) => {
     return currentUser ? children : <Navigate to="/login" />;
   };
-  console.log(currentUser);
+
   return useRoutes([
     {
       path: "/dashboard",
@@ -101,15 +99,6 @@ export default function Router() {
             </RequireAuth>
           ),
         },
-
-        {
-          path: "users",
-          element: (
-            <RequireAuth>
-              <Users />
-            </RequireAuth>
-          ),
-        },
         {
           path: "user",
           element: (
@@ -131,22 +120,6 @@ export default function Router() {
           element: (
             <RequireAuth>
               <EditUser />
-            </RequireAuth>
-          ),
-        },
-        {
-          path: "products",
-          element: (
-            <RequireAuth>
-              <Products />
-            </RequireAuth>
-          ),
-        },
-        {
-          path: "blog",
-          element: (
-            <RequireAuth>
-              <Blog />
             </RequireAuth>
           ),
         },

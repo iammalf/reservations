@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-//FIREBASE
-import { db } from "../../firebase";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+//TODO: SUPABASE CLIENT
+import { supabase } from "../../supabse/client";
 
-// material
+//TODO: MATERIAL COMPONENTS
 import {
   Button,
   Box,
@@ -15,48 +14,56 @@ import {
   FormControl,
   TextField,
 } from "@mui/material";
-// components
+//TODO: COMPONENTS
 import Page from "../../components/Page";
 
 export default function EditTour() {
-  //DATOS
+  //TODO: DATA
   const navigate = useNavigate();
   const { id } = useParams();
 
-  //CODIGO REGISTRO DE USUARIO
+  //TODO: INPUTS
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  //CODIGO USER UPDATE
+  //TODO: FETCH SINGLE SUPABASE_TOURS
+  useEffect(() => {
+    const fetchTours = async () => {
+      const { data, error } = await supabase
+        .from("tours")
+        .select()
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        navigate("/dashboard/tours", { replace: true });
+      }
+      if (data) {
+        setName(data.name);
+        setDescription(data.description);
+      }
+    };
+    fetchTours();
+  }, [id, navigate]);
+
+  //TODO: SUPABASE UPDATE TOUR
   const updateTour = async (e) => {
     e.preventDefault();
-    try {
-      //UPDATE USER
-      const tour = doc(db, "tours", id);
-      const data = { name: name, description: description };
-      await updateDoc(tour, data);
-      navigate("/dashboard/tours");
-    } catch (error) {
+    const { data, error } = await supabase
+      .from("tours")
+      .update({ name, description })
+      .eq("id", id);
+
+    if (error) {
       console.log(error);
     }
-  };
-
-  const getTourById = async (id) => {
-    const tour = await getDoc(doc(db, "tours", id));
-    if (tour.exists()) {
-      setName(tour.data().name);
-      setDescription(tour.data().description);
-      console.log(tour.data());
-    } else {
-      alert("Tour Not Exists");
+    if (data) {
+      console.log(data);
+      navigate("/dashboard/tours");
     }
   };
 
-  useEffect(() => {
-    getTourById(id);
-  }, []);
-  //CODIGO DE LA PLANTILLA
-
+  //TODO: CODIGO DE LA PLANTILLA
   return (
     <Page title="New Tour">
       <Container>
