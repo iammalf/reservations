@@ -1,6 +1,7 @@
 import { Link as RouterLink } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import moment from "moment";
 // @mui
 import { styled } from "@mui/material/styles";
 import { Card, Link, Container, Typography } from "@mui/material";
@@ -26,6 +27,7 @@ const RootStyle = styled("div")(({ theme }) => ({
 const HeaderStyle = styled("header")(({ theme }) => ({
   top: 0,
   zIndex: 9,
+  backgroundColor: "#015933",
   lineHeight: 0,
   width: "100%",
   display: "flex",
@@ -35,7 +37,7 @@ const HeaderStyle = styled("header")(({ theme }) => ({
   justifyContent: "space-between",
   [theme.breakpoints.up("md")]: {
     alignItems: "flex-start",
-    padding: theme.spacing(7, 5, 0, 7),
+    padding: theme.spacing(3, 3, 3, 7),
   },
 }));
 
@@ -91,41 +93,40 @@ export default function Login() {
     <Page title="Login">
       <RootStyle>
         <HeaderStyle>
-          <Logo />
+          <img
+            src="/static/images/logo.png"
+            alt="Machupicchu"
+            height="70"
+            width="70"
+          />
         </HeaderStyle>
-
-        {mdUp && (
-          <SectionStyle>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
-            </Typography>
-            <img
-              src="/static/illustrations/illustration_login.png"
-              alt="login"
-            />
-          </SectionStyle>
-        )}
 
         <Container maxWidth="sm">
           <ContentStyle>
+            <Typography variant="h3" sx={{ mt: 10, mb: 3 }}>
+              Hi, {reservation.fullname}
+            </Typography>
             <Typography variant="h4" gutterBottom>
-              Sign in
+              Reservation Details
+            </Typography>{" "}
+            <Typography sx={{ color: "text.secondary", mb: 1 }}>
+              BOOKING NUMBER: {"MR-00" + reservation.id}
             </Typography>
-
-            <Typography sx={{ color: "text.secondary", mb: 5 }}>
-              {reservation.tour}
+            <Typography sx={{ color: "text.secondary", mb: 1 }}>
+              TOUR: {reservation.tour}
             </Typography>
-
-            <LoginForm />
-
-            {!smUp && (
-              <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                Don’t have an account?{" "}
-                <Link variant="subtitle2" component={RouterLink} to="/register">
-                  Get started
-                </Link>
-              </Typography>
-            )}
+            <Typography sx={{ color: "text.secondary", mb: 1 }}>
+              START DATE: {moment(reservation.startdate).format("DD/MM/YYYY")}
+            </Typography>
+            <Typography sx={{ color: "text.secondary", mb: 1 }}>
+              END DATE: {moment(reservation.enddate).format("DD/MM/YYYY")}
+            </Typography>
+            <Typography sx={{ color: "text.secondary", mb: 1 }}>
+              DOLLAR CASH: {"USD. " + reservation.dollarcash + ".00"}
+            </Typography>
+            <Typography sx={{ color: "text.secondary", mb: 1 }}>
+              SOLES CASH: {"S/. " + reservation.solescash + ".00"}
+            </Typography>
           </ContentStyle>
         </Container>
       </RootStyle>

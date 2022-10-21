@@ -310,10 +310,6 @@ export default function Reservations() {
     },
   ];
 
-  //TODO: URL WHATSAPP
-  const urlWhatsApp = "Lorem";
-  console.log(urlWhatsApp);
-
   //TODO: CODIGO DE LA PLANTILLA
 
   return (
@@ -379,7 +375,7 @@ export default function Reservations() {
                     href={
                       "https://wa.me/51" +
                       detail.phone +
-                      "?text=I'm%20interested%20in%20your%20car%20for%20sale:%20https://reservations-three.vercel.app/reservation/" +
+                      "?text=Hello!%20Your%20reservation%20has%20been%20generated,%20check%20the%20details%20in%20the%20following%20link:%20https://reservations-three.vercel.app/reservation/" +
                       detail.uid +
                       ""
                     }
