@@ -379,7 +379,7 @@ export default function Reservations() {
                     href={
                       "https://wa.me/51" +
                       detail.phone +
-                      "?text=I'm%20interested%20in%20your%20car%20for%20sale:%20http://localhost:3000/reservation/92baa6cd-a8b2-4add-ab75-94dac3463e0b"
+                      "?text=I'm%20interested%20in%20your%20car%20for%20sale:%20https://reservations-three.vercel.app/reservation/5f143680-7cfe-4ae5-87ad-1923a130808e"
                     }
                     target="_blank"
                     rel="noopener noreferrer"
