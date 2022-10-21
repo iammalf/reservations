@@ -379,7 +379,7 @@ export default function Reservations() {
                     href={
                       "https://wa.me/51" +
                       detail.phone +
-                      "?text=I'm%20interested%20in%20your%20car%20for%20sale"
+                      "?text=I'm%20interested%20in%20your%20car%20for%20sale:%20http://localhost:3000/reservation/92baa6cd-a8b2-4add-ab75-94dac3463e0b"
                     }
                     target="_blank"
                     rel="noopener noreferrer"

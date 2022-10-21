@@ -45,7 +45,7 @@ export default function EditReservations() {
 
   const [user, setUser] = useState({});
   const userName = user.name;
-  console.log(userName);
+  //console.log(userName);
 
   const docRef = doc(db, "users", currentUser.uid);
   useEffect(() => {

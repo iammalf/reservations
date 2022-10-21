@@ -8,20 +8,24 @@ import DashboardApp from "./pages/DashboardApp";
 import Login from "./pages/Login";
 import NotFound from "./pages/Page404";
 import Register from "./pages/Register";
-//TODO USERS ROUTES
 
+//TODO: USERS ROUTES
 import User from "./pages/Users/User";
 import NewUser from "./pages/Users/NewUser";
 import EditUser from "./pages/Users/EditUser";
-//TODO TOURS ROUTES
+
+//TODO: TOURS ROUTES
 import Tours from "./pages/Tours/Tours";
 import NewTour from "./pages/Tours/NewTour";
 import EditTour from "./pages/Tours/EditTour";
-//TODO RESERVATIONS ROUTES
+
+//TODO: RESERVATIONS ROUTES
 import Reservations from "./pages/Reservations/Reservations";
 import NewReservations from "./pages/Reservations/NewReservations";
 import EditReservations from "./pages/Reservations/EditReservations";
-//TODO CONTEXT
+import Reservation from "./pages/Reservations/Reservation";
+
+//TODO: CONTEXT
 import { AuthContext } from "./context/AuthContext";
 
 // ----------------------------------------------------------------------
@@ -128,6 +132,10 @@ export default function Router() {
     {
       path: "login",
       element: <Login />,
+    },
+    {
+      path: "reservation/:uid",
+      element: <Reservation />,
     },
     {
       path: "register",
