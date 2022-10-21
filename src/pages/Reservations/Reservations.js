@@ -332,7 +332,7 @@ export default function Reservations() {
         </Stack>
 
         <Card>
-          <Box sx={{ height: 500, width: "100%" }}>
+          <Box sx={{ height: 700, width: "100%" }}>
             <DataGrid
               rows={reservations}
               columns={columnas}
