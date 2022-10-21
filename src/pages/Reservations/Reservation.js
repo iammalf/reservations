@@ -104,7 +104,7 @@ export default function Login() {
         <Container maxWidth="sm">
           <ContentStyle>
             <Typography variant="h3" sx={{ mt: 10, mb: 3 }}>
-              Hi, {reservation.fullname}
+              Hi, {reservation.fullname.toUpperCase()}
             </Typography>
             <Typography variant="h4" gutterBottom>
               Reservation Details
