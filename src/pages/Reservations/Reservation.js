@@ -4,14 +4,11 @@ import { useParams } from "react-router-dom";
 import moment from "moment";
 // @mui
 import { styled } from "@mui/material/styles";
-import { Card, Link, Container, Typography } from "@mui/material";
+import { Card, Container, Typography, Grid, Box } from "@mui/material";
 // hooks
 import useResponsive from "../../hooks/useResponsive";
 // components
 import Page from "../../components/Page";
-import Logo from "../../components/Logo";
-// sections
-import { LoginForm } from "../../sections/auth/login";
 
 //TODO: SUPABASE CLIENT
 import { supabase } from "../../supabse/client";
@@ -103,30 +100,76 @@ export default function Login() {
 
         <Container maxWidth="sm">
           <ContentStyle>
-            <Typography variant="h3" sx={{ mt: 10, mb: 3 }}>
-              Hi, {reservation.fullname.toUpperCase()}
+            <Box sx={{ flexGrow: 1 }}>
+              <Grid
+                container
+                spacing={{ xs: 2, md: 3 }}
+                columns={{ xs: 2, sm: 8, md: 12 }}
+              >
+                <Grid item xs={12} sm={12} md={12} sx={{ mt: 10 }}>
+                  <img
+                    src="/static/images/logo.png"
+                    alt="Machupicchu"
+                    height="100"
+                    width="100"
+                    aling="center"
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+            <Typography variant="h3" sx={{ mt: 5, mb: 3 }}>
+              Hi, {reservation.fullname}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Thank you for using the services of Machu Picchu Reservations.
+              Below you will find a brief summary of your recent booking.
             </Typography>
             <Typography variant="h4" gutterBottom>
               Reservation Details
-            </Typography>{" "}
-            <Typography sx={{ color: "text.secondary", mb: 1 }}>
-              BOOKING NUMBER: {"MR-00" + reservation.id}
             </Typography>
-            <Typography sx={{ color: "text.secondary", mb: 1 }}>
-              TOUR: {reservation.tour}
-            </Typography>
-            <Typography sx={{ color: "text.secondary", mb: 1 }}>
-              START DATE: {moment(reservation.startdate).format("DD/MM/YYYY")}
-            </Typography>
-            <Typography sx={{ color: "text.secondary", mb: 1 }}>
-              END DATE: {moment(reservation.enddate).format("DD/MM/YYYY")}
-            </Typography>
-            <Typography sx={{ color: "text.secondary", mb: 1 }}>
-              DOLLAR CASH: {"USD. " + reservation.dollarcash + ".00"}
-            </Typography>
-            <Typography sx={{ color: "text.secondary", mb: 1 }}>
-              SOLES CASH: {"S/. " + reservation.solescash + ".00"}
-            </Typography>
+            <Box sx={{ flexGrow: 1 }}>
+              <Grid
+                container
+                spacing={{ xs: 2, md: 3 }}
+                columns={{ xs: 2, sm: 8, md: 12 }}
+              >
+                <Grid item xs={12} sm={6} md={6}>
+                  <Typography sx={{ color: "text.secondary", mb: 1 }}>
+                    BOOKING NUMBER:
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6}>
+                  {"MR-00" + reservation.id}
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={6}>
+                  <Typography sx={{ color: "text.secondary", mb: 1 }}>
+                    TOUR:
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6}>
+                  {reservation.tour}
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={6}>
+                  <Typography sx={{ color: "text.secondary", mb: 1 }}>
+                    START DATE:
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6}>
+                  {moment(reservation.startdate).format("DD/MM/YYYY")}
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={6}>
+                  <Typography sx={{ color: "text.secondary", mb: 1 }}>
+                    END DATE:
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6}>
+                  {moment(reservation.enddate).format("DD/MM/YYYY")}
+                </Grid>
+              </Grid>
+            </Box>
           </ContentStyle>
         </Container>
       </RootStyle>
