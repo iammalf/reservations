@@ -38,7 +38,7 @@ const AccountStyle = styled("div")(({ theme }) => ({
   alignItems: "center",
   padding: theme.spacing(2, 2.5),
   borderRadius: Number(theme.shape.borderRadius) * 1.5,
-  backgroundColor: theme.palette.grey[500_12],
+  backgroundColor: "#000000",
 }));
 
 // ----------------------------------------------------------------------
@@ -54,7 +54,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   //TODO:  console.log(currentUser.uid);
 
   const [user, setUser] = useState({});
-  const userName = user.name;
 
   const docRef = doc(db, "users", currentUser.uid);
   useEffect(() => {
@@ -81,11 +80,11 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
     <Scrollbar
       sx={{
         height: 1,
+        backgroundColor: "#015933",
         "& .simplebar-content": {
           height: 1,
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#015933",
         },
       }}
     >
@@ -99,7 +98,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         <Logo />
       </Box>
 
-      <Box sx={{ mb: 5, mx: 2.5, backgroundColor: "#000000" }}>
+      <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
             <Avatar src={account.photoURL} alt="photoURL" />
@@ -152,7 +151,17 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   );
 
   return (
-    <RootStyle>
+    <RootStyle
+      sx={{
+        height: 1,
+        "& .simplebar-content": {
+          height: 1,
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "#015933",
+        },
+      }}
+    >
       {!isDesktop && (
         <Drawer
           open={isOpenSidebar}
