@@ -22,6 +22,7 @@ const HeaderStyle = styled("header")(({ theme }) => ({
   top: 0,
   zIndex: 9,
   lineHeight: 0,
+  backgroundColor: "#015933",
   width: "100%",
   display: "flex",
   alignItems: "center",
@@ -30,7 +31,7 @@ const HeaderStyle = styled("header")(({ theme }) => ({
   justifyContent: "space-between",
   [theme.breakpoints.up("md")]: {
     alignItems: "flex-start",
-    padding: theme.spacing(7, 5, 0, 7),
+    padding: theme.spacing(3, 3, 3, 7),
   },
 }));
 
@@ -64,7 +65,12 @@ export default function Login() {
     <Page title="Login">
       <RootStyle>
         <HeaderStyle>
-          <Logo />
+          <img
+            src="/static/images/logo.png"
+            alt="Machupicchu"
+            height="70"
+            width="70"
+          />
         </HeaderStyle>
 
         {mdUp && (
