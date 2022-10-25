@@ -24,7 +24,7 @@ export default function Logo({ disabledLink = false, sx }) {
   // const logo = <Box component="img" src="/static/logo.svg" sx={{ width: 40, height: 40, ...sx }} />
 
   const logo = (
-    <Box sx={{ mb: 2, width: 70, height: 60, ...sx }}>
+    <Box sx={{ mb: 3, width: 70, height: 60, ...sx }}>
       <img src="/static/images/logo.svg" alt="Machupicchu" />
     </Box>
   );

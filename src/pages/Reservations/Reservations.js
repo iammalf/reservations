@@ -108,6 +108,7 @@ export default function Reservations() {
       headerName: "Booking Number",
       width: 150,
       renderCell: (params) => "MR-00" + params.value,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "bdate",
@@ -116,11 +117,13 @@ export default function Reservations() {
       type: "date",
       renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "counter",
       headerName: "Counter",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
 
     //TODO SEGUNDO GRUPO 927987674
@@ -128,6 +131,7 @@ export default function Reservations() {
       field: "tour",
       headerName: "Tour",
       width: 250,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "startdate",
@@ -135,6 +139,7 @@ export default function Reservations() {
       type: "date",
       width: 120,
       renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "enddate",
@@ -142,11 +147,13 @@ export default function Reservations() {
       type: "date",
       width: 120,
       renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "hotelcusco",
       headerName: "Hotel Cusco",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     //TODO TERCER GRUPO
     {
@@ -156,120 +163,143 @@ export default function Reservations() {
       width: 180,
       renderCell: (params) =>
         moment(params.value).format("DD/MM/YYYY HH:mm:ss"),
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "picktime",
       headerName: "Pick Up Time",
       width: 150,
       renderCell: (params) => moment(params.value).format("HH:mm:ss"),
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "outwordjourney",
       headerName: "Outword Journey",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "returnjourney",
       headerName: "Return Journey",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "hotelinaacc",
       headerName: "Hotel In AACC",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     //TODO CUARTO GRUPO
     {
       field: "fullname",
       headerName: "Full Name",
       width: 200,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "passport",
       headerName: "Passport",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "nationality",
       headerName: "Nationality",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "gender",
       headerName: "Gender",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "adults",
       headerName: "Adults",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "phone",
       headerName: "Phone",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "email",
       headerName: "Email",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     //TODO QUINTO GRUPO
     {
       field: "entrancetype",
       headerName: "Entrance Type",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "bus",
       headerName: "Bus Consettur",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "btg",
       headerName: "BTG",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "food",
       headerName: "Food Restrictions",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "tourinclusions",
       headerName: "Tour Inclusions",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "notes",
       headerName: "Notes",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     //TODO SEXTO GRUPO
     {
       field: "solescash",
       headerName: "Soles Cash",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "dollarcash",
       headerName: "Dollars Cash",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "card",
       headerName: "Card Credit/Debit",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "balancesoles",
       headerName: "Balance Soles",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "balancedollar",
       headerName: "Balance Dollars",
       width: 150,
+      headerClassName: "super-app-theme--header",
     },
     //TODO: ACTIONS
     {
@@ -278,6 +308,7 @@ export default function Reservations() {
       type: "actions",
       sortable: false,
       width: 200,
+      headerClassName: "super-app-theme--header",
       getActions: (reservations) => [
         <Box>
           <Tooltip title="View Details">
@@ -343,16 +374,32 @@ export default function Reservations() {
           </Stack>
 
           <Card>
-            <Box sx={{ height: 450, width: "100%" }}>
+            <Box
+              sx={{
+                height: 450,
+                width: "100%",
+                "& .super-app-theme--header": {
+                  backgroundColor: "#015933",
+                  color: "#ffffff",
+                },
+              }}
+            >
               <DataGrid
                 rows={reservations}
                 columns={columnas}
                 pageSize={10}
                 components={{ Toolbar: GridToolbar }}
                 rowsPerPageOptions={[5, 10, 20]}
-                checkboxSelection
                 disableSelectionOnClick
                 experimentalFeatures={{ newEditingApi: true }}
+                sx={{
+                  "& .css-13fmiiq-MuiButtonBase-root-MuiIconButton-root": {
+                    color: "#ffffff",
+                  },
+                  "& .css-lqwb09-MuiButtonBase-root-MuiButton-root": {
+                    color: "#015933",
+                  },
+                }}
               />
             </Box>
           </Card>
