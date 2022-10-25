@@ -8,8 +8,6 @@ import {
   onSnapshot,
   deleteDoc,
   doc,
-  Timestamp,
-  setDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase";
 // material
@@ -105,19 +103,6 @@ export default function User() {
       ),
     },
   ];
-
-  //Refencia a la BD Firestore
-  // const usersCollection = collection(db, "users");
-  //Funcion para mostrar todos los usuarios
-  /* const getUsers = async () => {
-    const data = await getDocs(usersCollection);
-    setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    console.log(users);
-  };
-  //usamos useEffect
-  useEffect(() => {
-    getUsers();
-  }, []); */
 
   //CODIGO DE LA PLANTILLA
 

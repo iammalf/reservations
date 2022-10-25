@@ -1,10 +1,9 @@
-import { Link as RouterLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 // @mui
 import { styled } from "@mui/material/styles";
-import { Card, Container, Typography, Grid, Box } from "@mui/material";
+import { Container, Typography, Grid, Box } from "@mui/material";
 // hooks
 import useResponsive from "../../hooks/useResponsive";
 // components
@@ -36,15 +35,6 @@ const HeaderStyle = styled("header")(({ theme }) => ({
     alignItems: "flex-start",
     padding: theme.spacing(3, 3, 3, 7),
   },
-}));
-
-const SectionStyle = styled(Card)(({ theme }) => ({
-  width: "100%",
-  maxWidth: 464,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  margin: theme.spacing(2, 0, 2, 2),
 }));
 
 const ContentStyle = styled("div")(({ theme }) => ({
@@ -81,10 +71,6 @@ export default function Login() {
     };
     fetchReservations();
   }, []);
-
-  const smUp = useResponsive("up", "sm");
-
-  const mdUp = useResponsive("up", "md");
 
   return (
     <Page title="Reservation Detail">

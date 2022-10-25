@@ -11,7 +11,7 @@ import { supabase } from "../../supabse/client";
 //TODO: FIREBASE USER ACTIVE
 import { AuthContext } from "../../context/AuthContext";
 
-//TODO: FIBASE
+//TODO: FIREBASE
 import { db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 

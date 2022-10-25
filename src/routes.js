@@ -51,7 +51,8 @@ export default function Router() {
           path: "app",
           element: (
             <RequireAuth>
-              <DashboardApp />
+              {/* <DashboardApp /> */}
+              <Reservations />
             </RequireAuth>
           ),
         },

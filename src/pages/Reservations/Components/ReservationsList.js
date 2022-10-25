@@ -115,7 +115,7 @@ function Reservationslist() {
       label: "Start Date",
     },
     {
-      id: "endDate",
+      id: "enddate",
       numeric: false,
       disablePadding: false,
       label: "End Date",
@@ -294,7 +294,7 @@ function Reservationslist() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
