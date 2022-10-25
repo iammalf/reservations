@@ -85,6 +85,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           height: 1,
           display: "flex",
           flexDirection: "column",
+          backgroundColor: "#015933",
         },
       }}
     >
@@ -98,16 +99,16 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         <Logo />
       </Box>
 
-      <Box sx={{ mb: 5, mx: 2.5 }}>
+      <Box sx={{ mb: 5, mx: 2.5, backgroundColor: "#000000" }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
             <Avatar src={account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-                {userName}
+              <Typography variant="subtitle2" sx={{ color: "#ffffff" }}>
+                {user.name}
               </Typography>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                {account.role}
+              <Typography variant="body2" sx={{ color: "#ffffff" }}>
+                {user.role}
               </Typography>
             </Box>
           </AccountStyle>
