@@ -376,7 +376,7 @@ export default function Reservations() {
           <Card>
             <Box
               sx={{
-                height: 450,
+                height: 650,
                 width: "100%",
                 "& .super-app-theme--header": {
                   backgroundColor: "#015933",
