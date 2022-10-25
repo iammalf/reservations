@@ -63,23 +63,27 @@ export default function Tours() {
       field: "id",
       headerName: "ID",
       width: 50,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "name",
       headerName: "Name",
-      width: 300,
+      width: 350,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "description",
       headerName: "Description",
-      width: 400,
+      width: 420,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "actions",
       headerName: "Actions",
       type: "actions",
       sortable: false,
-      width: 200,
+      width: 230,
+      headerClassName: "super-app-theme--header",
       renderCell: (tours) => (
         <Box>
           <Tooltip title="View Details">
@@ -130,16 +134,32 @@ export default function Tours() {
         </Stack>
 
         <Card>
-          <Box sx={{ height: 700, width: "100%" }}>
+          <Box
+            sx={{
+              height: 700,
+              width: "100%",
+              "& .super-app-theme--header": {
+                backgroundColor: "#015933",
+                color: "#ffffff",
+              },
+            }}
+          >
             <DataGrid
               rows={tours}
               columns={columns}
               pageSize={5}
               components={{ Toolbar: GridToolbar }}
               rowsPerPageOptions={[5, 10, 20]}
-              checkboxSelection
               disableSelectionOnClick
               experimentalFeatures={{ newEditingApi: true }}
+              sx={{
+                "& .css-13fmiiq-MuiButtonBase-root-MuiIconButton-root": {
+                  color: "#ffffff",
+                },
+                "& .css-lqwb09-MuiButtonBase-root-MuiButton-root": {
+                  color: "#015933",
+                },
+              }}
             />
           </Box>
         </Card>

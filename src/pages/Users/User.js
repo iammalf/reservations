@@ -57,24 +57,28 @@ export default function User() {
     {
       field: "name",
       headerName: "Name",
-      width: 200,
+      width: 350,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "email",
       headerName: "Email",
-      width: 200,
+      width: 220,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "role",
       headerName: "Role",
-      width: 100,
+      width: 150,
+      headerClassName: "super-app-theme--header",
     },
     {
       field: "actions",
       headerName: "Actions",
       type: "actions",
       sortable: false,
-      width: 200,
+      width: 220,
+      headerClassName: "super-app-theme--header",
       renderCell: (users) => (
         <Box>
           <Tooltip title="View Details">
@@ -127,16 +131,32 @@ export default function User() {
         </Stack>
 
         <Card>
-          <Box sx={{ height: 400, width: "100%" }}>
+          <Box
+            sx={{
+              height: 400,
+              width: "100%",
+              "& .super-app-theme--header": {
+                backgroundColor: "#015933",
+                color: "#ffffff",
+              },
+            }}
+          >
             <DataGrid
               rows={users}
               columns={columns}
               pageSize={5}
               components={{ Toolbar: GridToolbar }}
               rowsPerPageOptions={[5, 10, 20]}
-              checkboxSelection
               disableSelectionOnClick
               experimentalFeatures={{ newEditingApi: true }}
+              sx={{
+                "& .css-13fmiiq-MuiButtonBase-root-MuiIconButton-root": {
+                  color: "#ffffff",
+                },
+                "& .css-lqwb09-MuiButtonBase-root-MuiButton-root": {
+                  color: "#015933",
+                },
+              }}
             />
           </Box>
         </Card>
