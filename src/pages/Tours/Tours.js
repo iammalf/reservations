@@ -142,12 +142,6 @@ export default function Tours() {
                 backgroundColor: "#015933",
                 color: "#ffffff",
               },
-              "& .css-13fmiiq-MuiButtonBase-root-MuiIconButton-root": {
-                color: "#ffffff",
-              },
-              "& .css-lqwb09-MuiButtonBase-root-MuiButton-root": {
-                color: "#015933",
-              },
             }}
           >
             <DataGrid
@@ -158,6 +152,14 @@ export default function Tours() {
               rowsPerPageOptions={[5, 10, 20]}
               disableSelectionOnClick
               experimentalFeatures={{ newEditingApi: true }}
+              sx={{
+                "& .css-13fmiiq-MuiButtonBase-root-MuiIconButton-root": {
+                  color: "#ffffff",
+                },
+                "& .css-lqwb09-MuiButtonBase-root-MuiButton-root": {
+                  color: "#015933",
+                },
+              }}
             />
           </Box>
         </Card>
