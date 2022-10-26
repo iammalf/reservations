@@ -107,7 +107,7 @@ export default function Reservations() {
       field: "id",
       headerName: "Booking Number",
       width: 150,
-      renderCell: (params) => "MR-00" + params.value,
+      renderCell: (params) => "MR-000" + params.value,
       headerClassName: "super-app-theme--header",
     },
     {
@@ -138,6 +138,7 @@ export default function Reservations() {
       headerName: "Start Date",
       type: "date",
       width: 120,
+      editable: true,
       renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
       headerClassName: "super-app-theme--header",
     },
