@@ -24,7 +24,16 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
+import { tableCellClasses } from "@mui/material/TableCell";
+import { styled } from "@mui/material/styles";
 import { Delete, Edit, Preview } from "@mui/icons-material";
 
 import { Icon } from "@iconify/react";
@@ -352,6 +361,38 @@ export default function Reservations() {
     pageStyle: "print",
   });
 
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    "&:last-child td, &:last-child th": {
+      border: 0,
+    },
+  }));
+
+  function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+  }
+
+  const rows = [
+    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
+    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
+    createData("Eclair", 262, 16.0, 24, 6.0),
+    createData("Cupcake", 305, 3.7, 67, 4.3),
+    createData("Gingerbread", 356, 16.0, 49, 3.9),
+  ];
+
   //TODO: CODIGO DE LA PLANTILLA
 
   return (
@@ -410,7 +451,7 @@ export default function Reservations() {
             onClose={handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
-            maxWidth="sm"
+            maxWidth="md"
           >
             <DialogTitle id="alert-dialog-title">
               {"Details of the Reserve  "}
@@ -420,82 +461,160 @@ export default function Reservations() {
                 <Card>
                   <CardContent>
                     <div ref={componentRef}>
-                      <Box sx={{ flexGrow: 1 }}>
-                        <Grid
-                          container
-                          spacing={{ xs: 2, md: 3 }}
-                          columns={{ xs: 2, sm: 8, md: 12 }}
-                        >
-                          <Grid item xs={12} sm={6} md={6} sx={{ mt: 5 }}>
-                            <img
-                              src="/static/images/logo.png"
-                              alt="Machupicchu"
-                              height="100"
-                              width="100"
-                              aling="center"
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={6} md={6} sx={{ mt: 5 }}>
-                            <Typography variant="subtitle1" aling="center">
-                              BOOKING NUMBER
-                            </Typography>
-                            <Typography variant="h6" aling="center">
-                              {"MR-000" + detail.id}
-                            </Typography>
-                            <Typography variant="subtitle1" aling="center">
-                              BOOKING DATE
-                            </Typography>
-                            <Typography variant="h6" aling="center">
-                              {moment(detail.bdate).format("DD/MM/YYYY")}
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </Box>
-                      <Typography variant="h5" sx={{ mt: 5, mb: 3 }}>
-                        Name: {detail.fullname}
-                      </Typography>
-                      <Typography variant="subtitle1" gutterBottom>
-                        Reservation Details
-                      </Typography>
-                      <Box sx={{ flexGrow: 1 }}>
-                        <Grid
-                          container
-                          spacing={{ xs: 2, md: 3 }}
-                          columns={{ xs: 2, sm: 8, md: 12 }}
-                        >
-                          <Grid item xs={12} sm={6} md={6}>
-                            <Typography sx={{ color: "text.secondary" }}>
-                              TOUR:
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} sm={6} md={6}>
-                            <Typography variant="subtitle1">
-                              {detail.tour}
-                            </Typography>
-                          </Grid>
+                      <Box sx={{ flexGrow: 1, mt: 10 }}>
+                        <TableContainer component={Paper}>
+                          <Table
+                            sx={{ minWidth: 450 }}
+                            aria-label="simple table"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>
+                                  <Grid
+                                    item
+                                    xs={12}
+                                    sm={8}
+                                    md={8}
+                                    sx={{ mt: 1 }}
+                                  >
+                                    <img
+                                      src="/static/images/logo.png"
+                                      alt="Machupicchu"
+                                      height="80"
+                                      width="80"
+                                      aling="center"
+                                    />
+                                  </Grid>
+                                </TableCell>
+                                <TableCell align="left">
+                                  <Grid
+                                    item
+                                    xs={12}
+                                    sm={4}
+                                    md={4}
+                                    sx={{ mt: 1 }}
+                                  >
+                                    <Typography variant="subtitle2">
+                                      Machu Picchu Reservations
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                      Address: Portal nuevo 270 plaza regocijo
+                                      Cusco – Peru
+                                    </Typography>
+                                    <Typography variant="subtitlsubtitle2e1">
+                                      Email: machupicchureservations@gmail.com
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                      Phone: +51 84 286257
+                                    </Typography>
+                                  </Grid>
+                                </TableCell>
+                                <TableCell
+                                  align="center"
+                                  sx={{ border: 1, borderRadius: 20 }}
+                                >
+                                  <Grid
+                                    item
+                                    xs={12}
+                                    sm={4}
+                                    md={4}
+                                    sx={{ mt: 1 }}
+                                  >
+                                    <Typography variant="subtitle2">
+                                      BOOKING NUMBER
+                                    </Typography>
+                                    <Typography variant="subtitle1">
+                                      {"MR-000" + detail.id}
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                      BOOKING DATE
+                                    </Typography>
+                                    <Typography variant="subtitle1">
+                                      {moment(detail.bdate).format(
+                                        "DD/MM/YYYY"
+                                      )}
+                                    </Typography>
+                                  </Grid>
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                          </Table>
+                        </TableContainer>
 
-                          <Grid item xs={12} sm={6} md={6}>
-                            <Typography sx={{ color: "text.secondary" }}>
-                              START DATE:
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} sm={6} md={6}>
-                            <Typography variant="subtitle1">
-                              {moment(detail.startdate).format("DD/MM/YYYY")}
-                            </Typography>
-                          </Grid>
+                        <TableContainer component={Paper}>
+                          <Table
+                            sx={{ minWidth: 450 }}
+                            aria-label="simple table"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>
+                                  <Grid item xs={12} sm={8} md={8}>
+                                    <Typography variant="subtitle2">
+                                      Client: {detail.fullname}
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                      Email: {detail.email}
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                      Phone: {detail.phone}
+                                    </Typography>
+                                  </Grid>
+                                </TableCell>
+                                <TableCell align="left">
+                                  <Grid item xs={12} sm={4} md={4}>
+                                    <Typography variant="subtitle2">
+                                      Date of issue:{" "}
+                                      {moment(detail.bdate).format(
+                                        "DD/MM/YYYY"
+                                      )}
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                      Expiration date:{" "}
+                                      {moment(detail.bdate).format(
+                                        "DD/MM/YYYY"
+                                      )}
+                                    </Typography>
+                                  </Grid>
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                          </Table>
+                        </TableContainer>
 
-                          <Grid item xs={12} sm={6} md={6}>
-                            <Typography sx={{ color: "text.secondary" }}>
-                              END DATE:
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} sm={6} md={6}>
-                            <Typography variant="subtitle1">
-                              {moment(detail.enddate).format("DD/MM/YYYY")}
-                            </Typography>
-                          </Grid>
-                        </Grid>
+                        <TableContainer component={Paper}>
+                          <Table
+                            sx={{ minWidth: 450 }}
+                            aria-label="customized table"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <StyledTableCell>Tour</StyledTableCell>
+                                <StyledTableCell align="left">
+                                  Start Date
+                                </StyledTableCell>
+                                <StyledTableCell align="left">
+                                  End Date
+                                </StyledTableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              <StyledTableRow>
+                                <StyledTableCell component="th" scope="row">
+                                  {detail.tour}
+                                </StyledTableCell>
+                                <StyledTableCell component="th" scope="row">
+                                  {moment(detail.startdate).format(
+                                    "DD/MM/YYYY"
+                                  )}
+                                </StyledTableCell>
+                                <StyledTableCell component="th" scope="row">
+                                  {moment(detail.enddate).format("DD/MM/YYYY")}
+                                </StyledTableCell>
+                              </StyledTableRow>
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
                       </Box>
                     </div>
                   </CardContent>
